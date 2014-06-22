@@ -1,29 +1,29 @@
 ## An R function that is able to cache potentially time-consuming computations.
 ## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse
-makeCacheMatrix <- function( m = matrix() ) {
+makeCacheMatrix <- function( trix = matrix() ) {
 
     i <- NULL
 
     set <- function( matrix ) {
-            m <<- matrix
+            trix <<- matrix
             i <<- NULL
     }
 
     get <- function() {
-	m
+	trix
     }
 
-    setInverse <- function(inverse) {
+    setInv <- function(inverse) {
         i <<- inverse
     }
 
-    getInverse <- function() {
+    getInv <- function() {
         i
     }
 
     list(set = set, get = get,
-         setInverse = setInverse,
-         getInverse = getInverse)
+         setInv = setInv,
+         getInv = getInv)
 }
 
 
@@ -34,18 +34,18 @@ makeCacheMatrix <- function( m = matrix() ) {
 
 cacheSolve <- function(x, ...) {
 
-    m <- x$getInverse()
+    trix <- x$getInv()
 
-    if( !is.null(m) ) {
+    if( !is.null(trix) ) {
             message("getting cached data")
-            return(m)
+            return(trix)
     }
 
     data <- x$get()
 
-    m <- solve(data) %*% data
+    trix <- solve(data) %*% data
 
-    x$setInverse(m)
+    x$setInv(trix)
 
-    m
+    trix
 }
