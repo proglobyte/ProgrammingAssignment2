@@ -1,31 +1,16 @@
 ## An R function that is able to cache potentially time-consuming computations.
 ## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse
-makeCacheMatrix <- function( trix = matrix() ) {
-
-    i <- NULL
-
-    set <- function( matrix ) {
-            trix <<- matrix
-            i <<- NULL
+makeCacheMatrix <- function(x = matrix()) {
+    inv <- NULL
+    set <- function(y) {
+        x <<- y
+        inv <<- NULL
     }
-
-    get <- function() {
-	trix
-    }
-
-    setInv <- function(inverse) {
-        i <<- inverse
-    }
-
-    getInv <- function() {
-        i
-    }
-
-    list(set = set, get = get,
-         setInv = setInv,
-         getInv = getInv)
+    get <- function() x
+    setinverse <- function(inverse) inv <<- inverse
+    getinverse <- function() inv
+    list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
 }
-
 
 ## cacheSolve: This function computes the inverse of the special "matrix" 
 ## returned by makeCacheMatrix above. If the inverse has already been calculated
@@ -33,19 +18,13 @@ makeCacheMatrix <- function( trix = matrix() ) {
 ## from the cache.
 
 cacheSolve <- function(x, ...) {
-
-    trix <- x$getInv()
-
-    if( !is.null(trix) ) {
-            message("getting cached data")
-            return(trix)
+    inv <- x$getinverse()
+    if(!is.null(inv)) {
+        message("getting cached data.")
+        return(inv)
     }
-
     data <- x$get()
-
-    trix <- solve(data) %*% data
-
-    x$setInv(trix)
-
-    trix
+    inv <- solve(data)
+    x$setinverse(inv)
+    inv
 }
